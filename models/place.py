@@ -22,7 +22,7 @@ if models.storage_t == 'db':
 class Place(BaseModel, Base):
     """Representation of Place """
     if models.storage_t == 'db':
-        _tablename_ = 'places'
+        __tablename__ = 'places'
         city_id = Column(String(60), ForeignKey('cities.id'), nullable=False)
         user_id = Column(String(60), ForeignKey('users.id'), nullable=False)
         name = Column(String(128), nullable=False)
@@ -50,9 +50,9 @@ class Place(BaseModel, Base):
         longitude = 0.0
         amenity_ids = []
 
-    def _init_(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         """initializes Place"""
-        super()._init_(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     if models.storage_t != 'db':
         @property
