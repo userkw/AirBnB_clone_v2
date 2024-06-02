@@ -10,7 +10,6 @@ from datetime import datetime
 from os.path import exists, isdir
 import os
 
-
 env.hosts = ['54.83.172.21', '100.25.135.230']
 
 
@@ -26,6 +25,7 @@ def do_pack():
                 f.write('<html><body><h1>Test</h1></body></html>')
         file_name = "versions/web_static_{}.tgz".format(date)
         local("tar -cvzf {} web_static".format(file_name))
+        print(f"Archive created: {file_name}")
         return file_name
     except Exception as e:
         print(f"Error: {e}")
@@ -40,7 +40,6 @@ def do_deploy(archive_path):
         file_n = archive_path.split("/")[-1]
         no_ext = file_n.split(".")[0]
         path = "/data/web_static/releases/"
-
         put(archive_path, '/tmp/')
         run(f'mkdir -p {path}{no_ext}/')
         run(f'tar -xzf /tmp/{file_n} -C {path}{no_ext}/')
@@ -49,7 +48,7 @@ def do_deploy(archive_path):
         run(f'rm -rf {path}{no_ext}/web_static')
         run('rm -rf /data/web_static/current')
         run(f'ln -s {path}{no_ext}/ /data/web_static/current')
-
+        print(f"New version deployed: {path}{no_ext}/")
         return True
     except Exception as e:
         print(f"Error: {e}")
@@ -61,4 +60,5 @@ def deploy():
     archive_path = do_pack()
     if archive_path is None:
         return False
-    return do_deploy(archive_path)
+    result = do_deploy(archive_path)
+    return result
